@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#161412">
+  <meta name="description" content="Свадебное приглашение Ярослава и Виолетты">
+  <title>Ярослав и Виолетта · 28 мая 2027</title>
+  <link rel="preload" as="image" href="./invite.jpg">
+  <style>
+    :root { color-scheme: dark; background: #161412; color: #fff5eb; }
+    body { margin: 0; font: 1rem/1.5 system-ui, sans-serif; }
+    [hidden] { display: none !important; }
+    main { width: min(100%, 768px, 75svh); margin-inline: auto; }
+    .cover { position: relative; }
+    .card { display: block; width: 100%; height: auto; }
+    .play {
+      position: absolute; left: 51.3%; top: 38.1%;
+      translate: -50% -50%; width: max(44px, 10%); aspect-ratio: 1;
+      display: grid; place-items: center;
+      padding: 0; border: 0; border-radius: 50%;
+      background: #2d2927; color: #fff5eb; cursor: pointer;
+      transition: background-color .2s, scale .2s;
+    }
+    .play svg { width: 46%; height: 46%; }
+    .play:focus-visible { outline: 2px solid #ffdbc8; outline-offset: 4px; }
+    .play:active { scale: .9; background: #733d36; }
+    @media (hover: hover) {
+      .play:hover { scale: 1.08; background: #733d36; }
+    }
+    main:has(#invite:not([hidden])) {
+      width: min(100%, 768px, max(240px, calc(75svh - 39px)));
+    }
+    .equalizer {
+      box-sizing: border-box; height: 52px;
+      display: flex; align-items: center; justify-content: center; gap: clamp(3px, 1vw, 7px);
+    }
+    .equalizer span {
+      width: clamp(3px, .65vw, 5px); height: var(--height); border-radius: 5px;
+      background: linear-gradient(#fce1cb, #ba8371);
+      transform: scaleY(.3);
+    }
+    .music-status { margin: 8px 16px; text-align: center; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal { animation: reveal 350ms ease-out; }
+      @keyframes reveal { from { opacity: 0; } to { opacity: 1; } }
+      .play::after {
+        content: ""; position: absolute; inset: 0; border: 1px solid #ffdbc8; border-radius: inherit;
+        animation: pulse 2.8s ease-out infinite;
+      }
+      @keyframes pulse {
+        0%, 35% { scale: 1; opacity: 0; }
+        45% { opacity: .7; }
+        80%, 100% { scale: 1.25; opacity: 0; }
+      }
+      .equalizer.is-playing span {
+        animation: bounce var(--speed) var(--delay) ease-in-out infinite alternate;
+      }
+      @keyframes bounce {
+        from { transform: scaleY(.24); }
+        to { transform: scaleY(1); }
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="cover" id="cover">
+      <img class="card" src="./cover.jpg" width="768" height="1024"
+           alt="Между нами любовь. Ярослав и Виолетта приглашают вас на свадьбу.">
+      <button class="play" id="play" type="button"
+              aria-label="Открыть приглашение и включить музыку">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 3v18l15-9z"/></svg>
+      </button>
+      <p class="music-status" id="music-status" role="status" hidden>Музыка не запустилась. Нажмите ▶ ещё раз.</p>
+    </section>
+
+    <section class="reveal" id="invite" hidden>
+      <h1 id="details" class="sr-only" tabindex="-1">Приглашение на свадьбу Ярослава и Виолетты</h1>
+      <img class="card" src="./invite.jpg" width="768" height="1024"
+           alt="28 мая 2027 года в 15:30. Верещагино, улица 50 лет Октября, 95. Дресс-код: оттенки на картинке. Подтвердите присутствие до 1 мая 2027 года.">
+      <div class="equalizer" id="equalizer" aria-hidden="true">
+        <span style="--height: 9px; --speed: 530ms; --delay: -220ms"></span>
+        <span style="--height: 13px; --speed: 610ms; --delay: -480ms"></span>
+        <span style="--height: 20px; --speed: 420ms; --delay: -110ms"></span>
+        <span style="--height: 15px; --speed: 530ms; --delay: -400ms"></span>
+        <span style="--height: 25px; --speed: 640ms; --delay: -250ms"></span>
+        <span style="--height: 31px; --speed: 470ms; --delay: -410ms"></span>
+        <span style="--height: 21px; --speed: 510ms; --delay: -70ms"></span>
+        <span style="--height: 35px; --speed: 650ms; --delay: -520ms"></span>
+        <span style="--height: 28px; --speed: 490ms; --delay: -300ms"></span>
+        <span style="--height: 34px; --speed: 560ms; --delay: -110ms"></span>
+        <span style="--height: 22px; --speed: 430ms; --delay: -360ms"></span>
+        <span style="--height: 30px; --speed: 570ms; --delay: -180ms"></span>
+        <span style="--height: 25px; --speed: 610ms; --delay: -490ms"></span>
+        <span style="--height: 18px; --speed: 450ms; --delay: -200ms"></span>
+        <span style="--height: 14px; --speed: 550ms; --delay: -90ms"></span>
+        <span style="--height: 8px; --speed: 470ms; --delay: -350ms"></span>
+      </div>
+      <audio id="song" preload="metadata" src="./zhuravli.mp3"></audio>
+    </section>
+  </main>
+
+  <script>
+    const cover = document.getElementById('cover');
+    const invitation = document.getElementById('invite');
+    const song = document.getElementById('song');
+    const equalizer = document.getElementById('equalizer');
+    const play = document.getElementById('play');
+    const musicStatus = document.getElementById('music-status');
+
+    song.addEventListener('playing', () => equalizer.classList.add('is-playing'));
+    for (const event of ['pause', 'ended', 'waiting', 'error']) {
+      song.addEventListener(event, () => equalizer.classList.remove('is-playing'));
+    }
+
+    play.addEventListener('click', () => {
+      musicStatus.hidden = true;
+      cover.hidden = true;
+      invitation.hidden = false;
+      document.getElementById('details').focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+
+      song.play().catch(() => {
+        invitation.hidden = true;
+        cover.hidden = false;
+        musicStatus.hidden = false;
+        play.focus();
+      });
+    });
+  </script>
+</body>
+</html>
