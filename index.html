@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#161412">
   <meta name="description" content="Свадебное приглашение Ярослава и Виолетты">
   <title>Ярослав и Виолетта · 28 мая 2027</title>
-  <link rel="preload" as="image" href="./invite.jpg">
+  <link rel="preload" as="image" href="./announcement.jpg">
   <style>
     :root { color-scheme: dark; background: #161412; color: #fff5eb; }
     body { margin: 0; font: 1rem/1.5 system-ui, sans-serif; }
     [hidden] { display: none !important; }
-    main { width: min(100%, 768px, 75svh); margin-inline: auto; }
+    main { width: min(100%, 768px, calc(75svh - 24px)); margin-inline: auto; }
     .cover { position: relative; }
     .card { display: block; width: 100%; height: auto; }
     .play {
@@ -28,15 +28,28 @@
     @media (hover: hover) {
       .play:hover { scale: 1.08; background: #733d36; }
     }
-    main:has(#invite:not([hidden])) {
-      width: min(100%, 768px, max(240px, calc(75svh - 39px)));
+    .invitation {
+      position: relative;
+      /* Keep the top of the second card over the cover even after the animation. */
+      z-index: 101;
+      margin-top: -7%;
+    }
+    .announcement { box-shadow: 0 -10px 24px rgba(0, 0, 0, .25); }
+    .scroll-card {
+      position: relative;
+      z-index: var(--card-layer, auto);
+      opacity: var(--card-opacity, 1);
+      transform: scale(var(--card-scale, 1));
     }
     .equalizer {
-      box-sizing: border-box; height: 52px;
+      position: absolute; left: 22%; right: 22%; top: 89%; height: 4.5%;
+      box-sizing: border-box; pointer-events: none; background: transparent;
+      opacity: 0;
       display: flex; align-items: center; justify-content: center; gap: clamp(3px, 1vw, 7px);
     }
+    .equalizer.is-playing { opacity: 1; }
     .equalizer span {
-      width: clamp(3px, .65vw, 5px); height: var(--height); border-radius: 5px;
+      width: 3%; height: min(90%, var(--height)); border-radius: 5px;
       background: linear-gradient(#fce1cb, #ba8371);
       transform: scaleY(.3);
     }
@@ -46,8 +59,11 @@
       overflow: hidden; clip-path: inset(50%); white-space: nowrap;
     }
     @media (prefers-reduced-motion: no-preference) {
-      .reveal { animation: reveal 350ms ease-out; }
-      @keyframes reveal { from { opacity: 0; } to { opacity: 1; } }
+      .invitation.is-opening { animation: reveal 900ms cubic-bezier(.22, 1, .36, 1) both; }
+      @keyframes reveal {
+        from { opacity: 0; transform: translateY(clamp(72px, 13vw, 144px)); }
+        to { opacity: 1; transform: translateY(0); }
+      }
       .play::after {
         content: ""; position: absolute; inset: 0; border: 1px solid #ffdbc8; border-radius: inherit;
         animation: pulse 2.8s ease-out infinite;
@@ -69,20 +85,14 @@
 </head>
 <body>
   <main>
-    <section class="cover" id="cover">
+    <section class="cover scroll-card" id="cover">
       <img class="card" src="./cover.jpg" width="768" height="1024"
            alt="Между нами любовь. Ярослав и Виолетта приглашают вас на свадьбу.">
       <button class="play" id="play" type="button"
-              aria-label="Открыть приглашение и включить музыку">
+              aria-label="Открыть приглашение и включить музыку"
+              aria-controls="invite" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 3v18l15-9z"/></svg>
       </button>
-      <p class="music-status" id="music-status" role="status" hidden>Музыка не запустилась. Нажмите ▶ ещё раз.</p>
-    </section>
-
-    <section class="reveal" id="invite" hidden>
-      <h1 id="details" class="sr-only" tabindex="-1">Приглашение на свадьбу Ярослава и Виолетты</h1>
-      <img class="card" src="./invite.jpg" width="768" height="1024"
-           alt="28 мая 2027 года в 15:30. Верещагино, улица 50 лет Октября, 95. Дресс-код: оттенки на картинке. Подтвердите присутствие до 1 мая 2027 года.">
       <div class="equalizer" id="equalizer" aria-hidden="true">
         <span style="--height: 9px; --speed: 530ms; --delay: -220ms"></span>
         <span style="--height: 13px; --speed: 610ms; --delay: -480ms"></span>
@@ -101,33 +111,116 @@
         <span style="--height: 14px; --speed: 550ms; --delay: -90ms"></span>
         <span style="--height: 8px; --speed: 470ms; --delay: -350ms"></span>
       </div>
-      <audio id="song" preload="metadata" src="./zhuravli.mp3"></audio>
+      <p class="music-status" id="music-status" role="status" hidden>Музыка не запустилась. Нажмите ▶ ещё раз.</p>
     </section>
+
+    <div class="invitation" id="invite" hidden>
+      <section class="announcement scroll-card">
+        <h1 class="sr-only">Приглашение на свадьбу Ярослава и Виолетты</h1>
+        <img class="card" src="./announcement.jpg" width="1087" height="1447"
+             alt="Родные и близкие! Мы женимся! Мы надеемся, что вы разделите с нами этот прекрасный день.">
+      </section>
+      <section class="scroll-card">
+        <img class="card" src="./details.jpg" width="1087" height="1447"
+             alt="Детали. Вместо цветов можно подарить бутылку любимого напитка с запиской о событии, к которому приурочить её открытие. Будем рады вкладу в семейный бюджет.">
+      </section>
+      <section class="scroll-card">
+        <img class="card" src="./invite.jpg" width="960" height="1280"
+             alt="28 мая 2027 года в 15:30. Верещагино, улица 50 лет Октября, 95. Дресс-код: оттенки на картинке. Подтвердите присутствие до 1 мая 2027 года.">
+      </section>
+    </div>
+    <audio id="song" preload="metadata" src="./zhuravli.mp3"></audio>
   </main>
 
   <script>
-    const cover = document.getElementById('cover');
     const invitation = document.getElementById('invite');
     const song = document.getElementById('song');
     const equalizer = document.getElementById('equalizer');
     const play = document.getElementById('play');
     const musicStatus = document.getElementById('music-status');
 
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const cards = [...document.querySelectorAll('.scroll-card')];
+    let scrollFrame = 0;
+
+    function updateCardFocus() {
+      scrollFrame = 0;
+      if (motionPreference.matches) {
+        for (const card of cards) {
+          card.style.removeProperty('--card-opacity');
+          card.style.removeProperty('--card-scale');
+          card.style.removeProperty('--card-layer');
+        }
+        return;
+      }
+
+      const viewportHeight = window.innerHeight;
+      const scrollTop = window.scrollY;
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - viewportHeight);
+      // Measure every card before changing its appearance. Scaling keeps its center fixed.
+      const focusByCard = cards.map((card, index) => {
+        const { top, bottom } = card.getBoundingClientRect();
+        const center = scrollTop + (top + bottom) / 2;
+        // The first and last cards can reach full emphasis at the ends of the page.
+        const targetScroll = Math.min(maxScroll, Math.max(0, center - viewportHeight / 2));
+        const distance = Math.abs(targetScroll - scrollTop) / card.offsetHeight;
+        const progress = 1 - Math.min(1, Math.max(0, (distance - 0.26) / 0.66));
+        const focus = progress * progress * (3 - 2 * progress);
+        // Keep the revealed edge of the second card visible as it approaches the center.
+        if (index === 1 && scrollTop <= targetScroll) {
+          return 0.82 + 0.18 * focus;
+        }
+        return focus;
+      });
+
+      for (const [index, card] of cards.entries()) {
+        const focus = focusByCard[index];
+        card.style.setProperty('--card-opacity', 0.12 + 0.88 * focus);
+        card.style.setProperty('--card-scale', 0.97 + 0.03 * focus);
+        card.style.setProperty('--card-layer', Math.round(100 * focus));
+      }
+    }
+
+    function queueCardFocusUpdate() {
+      if (!invitation.hidden && !scrollFrame) {
+        scrollFrame = requestAnimationFrame(updateCardFocus);
+      }
+    }
+
+    window.addEventListener('scroll', queueCardFocusUpdate, { passive: true });
+    window.addEventListener('resize', queueCardFocusUpdate);
+    motionPreference.addEventListener('change', queueCardFocusUpdate);
+
+    function updateButton() {
+      const playing = !song.paused && !song.ended;
+      play.setAttribute('aria-label', playing ? 'Пауза' : 'Включить музыку');
+      play.querySelector('path').setAttribute('d', playing ? 'M6 4h4v16H6zm8 0h4v16h-4z' : 'M6 3v18l15-9z');
+    }
+    for (const event of ['play', 'pause', 'ended']) song.addEventListener(event, updateButton);
+
     song.addEventListener('playing', () => equalizer.classList.add('is-playing'));
     for (const event of ['pause', 'ended', 'waiting', 'error']) {
       song.addEventListener(event, () => equalizer.classList.remove('is-playing'));
     }
 
+    invitation.addEventListener('animationend', (event) => {
+      if (event.target === invitation && event.animationName === 'reveal') {
+        invitation.classList.remove('is-opening');
+        queueCardFocusUpdate();
+      }
+    });
+
     play.addEventListener('click', () => {
       musicStatus.hidden = true;
-      cover.hidden = true;
-      invitation.hidden = false;
-      document.getElementById('details').focus({ preventScroll: true });
-      window.scrollTo(0, 0);
+      if (!song.paused) { song.pause(); return; }
+      if (invitation.hidden) {
+        invitation.hidden = false;
+        play.setAttribute('aria-expanded', 'true');
+        invitation.classList.add('is-opening');
+        queueCardFocusUpdate();
+      }
 
       song.play().catch(() => {
-        invitation.hidden = true;
-        cover.hidden = false;
         musicStatus.hidden = false;
         play.focus();
       });
